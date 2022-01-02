@@ -319,7 +319,7 @@ export const StoryListItem = (props: Props) => {
         ) : null}
 
         {content[current].renderIconMenu ? (
-          <View style={{width: '100%', alignSelf: 'flex-end'}}>
+          <View style={{width: '100%', justifyContent: 'flex-end'}}>
             {content[current].renderIconMenu}
           </View>
         ) : null}
