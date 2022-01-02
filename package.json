@@ -25,9 +25,10 @@
     "story",
     "instagram"
   ],
-  "author": {
-    "name": "Roberto da Cruz Giacomette",
-    "email": "roberto.giacomette18@gmail.com"
+  "author": "Roberto <roberto.giacomette18@gmail.com> (https://github.com/giacomette)",
+  "homepage": "https://github.com/giacomette/react-native-super-insta-story#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "readmeFilename": "README.md",
   "peerDependencies": {
