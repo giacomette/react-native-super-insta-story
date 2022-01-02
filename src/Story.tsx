@@ -7,7 +7,6 @@ import { isNullOrWhitespace } from "./helpers/ValidationHelpers";
 import type { IUserStory } from "./interfaces/IUserStory";
 import AndroidCubeEffect from "./AndroidCubeEffect";
 import CubeNavigationHorizontal from "./CubeNavigationHorizontal";
-import { ModalPortal } from 'react-native-modals';
 
 type Props = {
   data: IUserStory[];
@@ -141,8 +140,6 @@ export const Story = (props: Props) => {
 
   return (
     <Fragment>
-
-      <ModalPortal />
 
       <View style={style}>
         <StoryCircleListView

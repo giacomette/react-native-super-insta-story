@@ -11,13 +11,14 @@ import {
   View,
   Platform,
   SafeAreaView,
+  Modal,
   PanResponderGestureState,
+  ScrollView,
 } from "react-native";
 import type { IUserStoryItem } from "./interfaces/IUserStory";
 import { usePrevious } from "./helpers/StateHelpers";
 import { isNullOrWhitespace } from "./helpers/ValidationHelpers";
 import GestureRecognizer from "react-native-swipe-gestures";
-import { Modal, ModalContent } from "react-native-modals";
 
 const { width, height } = Dimensions.get("window");
 let prevIndex = -1;
@@ -48,6 +49,8 @@ export const StoryListItem = (props: Props) => {
       return {
         image: x.story_image,
         onPress: x.onPress,
+        renderMenu: x.renderMenu,
+        renderIconMenu: x.renderIconMenu,
         text: x.text,
         finish: x.finish, // TODO, mexi aqui,
         onStartView: x.onStartView, // TODO, mexi aqui
@@ -185,27 +188,58 @@ export const StoryListItem = (props: Props) => {
     }
   }
 
+
+  const handleCloseMenu = () => {
+
+    setVisibleMenu(false);
+    setPressed(false);
+    startAnimation();
+  }
+
   return (
     <>
-      <Modal
-        visible={visibleMenu}
-        swipeDirection={["down"]} // can be string or an array
-        swipeThreshold={200} // default 100
-        onSwipeOut={(event) => {
-          setVisibleMenu(false);
-        }}
-      >
-        <ModalContent>
-           {content[current].renderMenu()}
-        </ModalContent>
-      </Modal>
+    
+      {typeof content[current].renderMenu === "function" ? (
+        <Modal
+          visible={visibleMenu}
+          transparent
+          animationType="fade"
+          onRequestClose={() => {
+            handleCloseMenu()
+          }}
+        >
+          <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,.5)'}}>
+            <View 
+              style={{
+                flex: .2,
+                alignItems: 'flex-end',
+                padding: 16
+              }}>
+              <TouchableOpacity activeOpacity={.8} onPress={() => { handleCloseMenu()}} style={{width: 36, height: 36, top: 3, left: 3, borderRadius: 20, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{color: '#333', fontSize: 18}}>X</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={{backgroundColor: 'white', flex: .8 }}>
+             
+                {content[current].renderMenu()}
+              
+            </View>
+          </View>
+        </Modal>
+      ) : null}
 
       <GestureRecognizer
+        pointerEvents={visibleMenu ? "none" : "auto"}
         onSwipeUp={(_state: PanResponderGestureState) => {
-          onSwipeUp();
+          if(!visibleMenu) {
+            onSwipeUp();
+          }
         }}
         onSwipeDown={(_state: PanResponderGestureState) => {
-          onSwipeDown();
+          if(!visibleMenu) {
+            onSwipeDown();
+          }
         }}
         config={config}
         style={{
@@ -214,6 +248,9 @@ export const StoryListItem = (props: Props) => {
         }}
       >
         <SafeAreaView>
+
+       
+
           <View style={styles.backgroundContainer}>
             <Image
               onLoadEnd={() => start()}
@@ -318,9 +355,13 @@ export const StoryListItem = (props: Props) => {
           </View>
         ) : null}
 
-        {content[current].renderIconMenu ? (
-          <View style={{width: '100%', justifyContent: 'flex-end'}}>
-            {content[current].renderIconMenu}
+        {typeof content[current]?.renderIconMenu === "function" ? (
+          <View style={{ padding: 16, alignItems: "flex-end" }}>
+             <TouchableOpacity activeOpacity={.8} onPress={() => {
+               setVisibleMenu(true);
+               setPressed(true);
+               progress.stopAnimation()
+             }}>{content[current].renderIconMenu(content[current])}</TouchableOpacity>
           </View>
         ) : null}
 

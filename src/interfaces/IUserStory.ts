@@ -10,6 +10,8 @@ export interface IUserStoryItem {
     story_image: string
     onPress?: any,
     text?: any,
+    renderIconMenu?:any,
+    renderMenu?:any,
     finish?: number,// TODO, mexi aqui
     onStartView?: any // TODO, mexi aqui
 }
