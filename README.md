@@ -1,4 +1,4 @@
-# react-native-insta-story
+# react-native-super-insta-story
 
 <p align="center">
 <img src="./images/example.gif" height="500" />
@@ -8,12 +8,12 @@
 
 #### 1. Step
 ```javascript
-npm install react-native-insta-story --save
+npm install react-native-super-insta-story --save
 ```
 or
 
 ```javascript
-yarn add react-native-insta-story 
+yarn add react-native-super-insta-story 
 ```
 
 #### 2. Step
@@ -23,7 +23,7 @@ cd ios && pod install
 
 ## Import
 ```javascript
-import InstaStory from 'react-native-insta-story';
+import InstaStory from 'react-native-super-insta-story';
 ```
 
 ## Props
