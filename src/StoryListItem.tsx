@@ -190,7 +190,7 @@ export const StoryListItem = (props: Props) => {
 
 
   const handleCloseMenu = () => {
-
+console.log('close menu')
     setVisibleMenu(false);
     setPressed(false);
     startAnimation();
@@ -222,7 +222,7 @@ export const StoryListItem = (props: Props) => {
             
             <View style={{backgroundColor: 'white', flex: .8 }}>
              
-                {content[current].renderMenu()}
+                {content[current].renderMenu({onClose: () => handleCloseMenu()})}
               
             </View>
           </View>
