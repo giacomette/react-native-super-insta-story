@@ -17,7 +17,7 @@ import type { IUserStoryItem } from "./interfaces/IUserStory";
 import { usePrevious } from "./helpers/StateHelpers";
 import { isNullOrWhitespace } from "./helpers/ValidationHelpers";
 import GestureRecognizer from "react-native-swipe-gestures";
-import BottomSheet from '@gorhom/bottom-sheet';
+import { Modal, ModalContent } from "react-native-modals";
 
 const { width, height } = Dimensions.get("window");
 let prevIndex = -1;
@@ -38,6 +38,7 @@ type Props = {
 };
 
 export const StoryListItem = (props: Props) => {
+  const [visibleMenu, setVisibleMenu] = useState(false);
   const stories = props.stories;
 
   const [load, setLoad] = useState(true);
@@ -185,131 +186,164 @@ export const StoryListItem = (props: Props) => {
   }
 
   return (
-    <GestureRecognizer
-      onSwipeUp={(_state: PanResponderGestureState) => {
-        onSwipeUp();
-      }}
-      onSwipeDown={(_state: PanResponderGestureState) => {
-        onSwipeDown();
-      }}
-      config={config}
-      style={{
-        flex: 1,
-        backgroundColor: "black",
-      }}
-    >
-      <SafeAreaView>
-        <View style={styles.backgroundContainer}>
-          <Image
-            onLoadEnd={() => start()}
-            source={{ uri: content[current].image }}
-            style={styles.image}
-          />
-          {load && (
-            <View style={styles.spinnerContainer}>
-              <ActivityIndicator size="large" color={"white"} />
-            </View>
-          )}
-        </View>
-      </SafeAreaView>
-      <View style={{ flexDirection: "column", flex: 1 }}>
-        <View style={styles.animationBarContainer}>
-          {content.map((index: any, key) => {
-            return (
-              <View key={key} style={styles.animationBackground}>
-                <Animated.View
-                  style={{
-                    flex: current == key ? progress : content[key].finish,
-                    height: 2,
-                    backgroundColor: "white",
-                  }}
-                />
-              </View>
-            );
-          })}
-        </View>
-        <View style={styles.userContainer}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image
-              style={styles.avatarImage}
-              source={{ uri: props.profileImage }}
-            />
-            <Text style={styles.avatarText}>{props.profileName}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              if (props.onClosePress) {
-                props.onClosePress();
-              }
-            }}
-          >
-            <View style={styles.closeIconContainer}>
-              {props.customCloseComponent ? (
-                props.customCloseComponent
-              ) : (
-                <Text style={{ color: "white" }}>X</Text>
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.pressContainer}>
-          <TouchableWithoutFeedback
-            onPressIn={() => progress.stopAnimation()}
-            onLongPress={() => setPressed(true)}
-            onPressOut={() => {
-              setPressed(false);
-              startAnimation();
-            }}
-            onPress={() => {
-              if (!pressed && !load) {
-                previous();
-              }
-            }}
-          >
-            <View style={{ flex: 1 }} />
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPressIn={() => progress.stopAnimation()}
-            onLongPress={() => setPressed(true)}
-            onPressOut={() => {
-              setPressed(false);
-              startAnimation();
-            }}
-            onPress={() => {
-              if (!pressed && !load) {
-                next();
-              }
-            }}
-          >
-            <View style={{ flex: 1 }} />
-          </TouchableWithoutFeedback>
-        </View>
-      </View>
-      {content[current].text ?
-              <View style={{alignSelf: 'center', marginHorizontal: 16, marginBottom: 32, paddingVertical: 6, paddingHorizontal: 16, borderRadius: 6, backgroundColor: 'white'}}>
-                  <Text style={{color: '#333', fontSize: 16, lineHeight: 16}}>{content[current].text}</Text>
-              </View> : null
-      }
+    <>
+      <Modal
+        visible={visibleMenu}
+        swipeDirection={["down"]} // can be string or an array
+        swipeThreshold={200} // default 100
+        onSwipeOut={(event) => {
+          setVisibleMenu(false);
+        }}
+      >
+        <ModalContent>
+           {content[current].renderMenu()}
+        </ModalContent>
+      </Modal>
 
-      {content[current].onPress && (
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={onSwipeUp}
-          style={styles.swipeUpBtn}
-        >
-          {props.customSwipeUpComponent ? (
-            props.customSwipeUpComponent
-          ) : (
-            <>
-              <Text style={{ color: "white", marginTop: 5 }}></Text>
-              <Text style={{ color: "white", marginTop: 5 }}>
-                {props.swipeText ?? "Swipe Up"}
-              </Text>
-            </>
-          )}
-        </TouchableOpacity>
-      )}
-    </GestureRecognizer>
+      <GestureRecognizer
+        onSwipeUp={(_state: PanResponderGestureState) => {
+          onSwipeUp();
+        }}
+        onSwipeDown={(_state: PanResponderGestureState) => {
+          onSwipeDown();
+        }}
+        config={config}
+        style={{
+          flex: 1,
+          backgroundColor: "black",
+        }}
+      >
+        <SafeAreaView>
+          <View style={styles.backgroundContainer}>
+            <Image
+              onLoadEnd={() => start()}
+              source={{ uri: content[current].image }}
+              style={styles.image}
+            />
+            {load && (
+              <View style={styles.spinnerContainer}>
+                <ActivityIndicator size="large" color={"white"} />
+              </View>
+            )}
+          </View>
+        </SafeAreaView>
+        <View style={{ flexDirection: "column", flex: 1 }}>
+          <View style={styles.animationBarContainer}>
+            {content.map((index: any, key) => {
+              return (
+                <View key={key} style={styles.animationBackground}>
+                  <Animated.View
+                    style={{
+                      flex: current == key ? progress : content[key].finish,
+                      height: 2,
+                      backgroundColor: "white",
+                    }}
+                  />
+                </View>
+              );
+            })}
+          </View>
+          <View style={styles.userContainer}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Image
+                style={styles.avatarImage}
+                source={{ uri: props.profileImage }}
+              />
+              <Text style={styles.avatarText}>{props.profileName}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                if (props.onClosePress) {
+                  props.onClosePress();
+                }
+              }}
+            >
+              <View style={styles.closeIconContainer}>
+                {props.customCloseComponent ? (
+                  props.customCloseComponent
+                ) : (
+                  <Text style={{ color: "white" }}>X</Text>
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.pressContainer}>
+            <TouchableWithoutFeedback
+              onPressIn={() => progress.stopAnimation()}
+              onLongPress={() => setPressed(true)}
+              onPressOut={() => {
+                setPressed(false);
+                startAnimation();
+              }}
+              onPress={() => {
+                if (!pressed && !load) {
+                  previous();
+                }
+              }}
+            >
+              <View style={{ flex: 1 }} />
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPressIn={() => progress.stopAnimation()}
+              onLongPress={() => setPressed(true)}
+              onPressOut={() => {
+                setPressed(false);
+                startAnimation();
+              }}
+              onPress={() => {
+                if (!pressed && !load) {
+                  next();
+                }
+              }}
+            >
+              <View style={{ flex: 1 }} />
+            </TouchableWithoutFeedback>
+          </View>
+        </View>
+        {content[current].text ? (
+          <View
+            style={{
+              alignSelf: "center",
+              marginHorizontal: 16,
+              marginBottom: 32,
+              paddingVertical: 6,
+              paddingHorizontal: 16,
+              borderRadius: 6,
+              backgroundColor: "white",
+            }}
+          >
+            <Text style={{ color: "#333", fontSize: 16, lineHeight: 16 }}>
+              {content[current].text}
+            </Text>
+          </View>
+        ) : null}
+
+        {content[current].renderIconMenu ? (
+          <View style={{width: '100%', alignSelf: 'flex-end'}}>
+            {content[current].renderIconMenu}
+          </View>
+        ) : null}
+
+        {content[current].onPress && (
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={onSwipeUp}
+            style={styles.swipeUpBtn}
+          >
+            {props.customSwipeUpComponent ? (
+              props.customSwipeUpComponent
+            ) : (
+              <>
+                <Text style={{ color: "white", marginTop: 5 }}></Text>
+                <Text style={{ color: "white", marginTop: 5 }}>
+                  {props.swipeText ?? "Swipe Up"}
+                </Text>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
+      </GestureRecognizer>
+    </>
   );
 };
 
