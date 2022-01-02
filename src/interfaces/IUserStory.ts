@@ -9,6 +9,7 @@ export interface IUserStoryItem {
     story_id: number,
     story_image: string
     onPress?: any,
+    text?: any,
     finish?: number,// TODO, mexi aqui
     onStartView?: any // TODO, mexi aqui
 }

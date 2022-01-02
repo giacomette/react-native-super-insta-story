@@ -17,6 +17,7 @@ import type { IUserStoryItem } from "./interfaces/IUserStory";
 import { usePrevious } from "./helpers/StateHelpers";
 import { isNullOrWhitespace } from "./helpers/ValidationHelpers";
 import GestureRecognizer from "react-native-swipe-gestures";
+import BottomSheet from '@gorhom/bottom-sheet';
 
 const { width, height } = Dimensions.get("window");
 let prevIndex = -1;
@@ -46,6 +47,7 @@ export const StoryListItem = (props: Props) => {
       return {
         image: x.story_image,
         onPress: x.onPress,
+        text: x.text,
         finish: x.finish, // TODO, mexi aqui,
         onStartView: x.onStartView, // TODO, mexi aqui
       };
@@ -283,6 +285,12 @@ export const StoryListItem = (props: Props) => {
           </TouchableWithoutFeedback>
         </View>
       </View>
+      {content[current].text ?
+              <View style={{alignSelf: 'center', marginHorizontal: 16, marginBottom: 32, paddingVertical: 6, paddingHorizontal: 16, borderRadius: 6, backgroundColor: 'white'}}>
+                  <Text style={{color: '#333', fontSize: 16, lineHeight: 16}}>{content[current].text}</Text>
+              </View> : null
+      }
+
       {content[current].onPress && (
         <TouchableOpacity
           activeOpacity={1}
