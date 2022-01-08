@@ -48,6 +48,7 @@ export const StoryListItem = (props: Props) => {
     stories.map((x) => {
       return {
         image: x.story_image,
+        createdAt: x.createdAt,
         onPress: x.onPress,
         renderMenu: x.renderMenu,
         renderIconMenu: x.renderIconMenu,
@@ -281,12 +282,17 @@ console.log('close menu')
             })}
           </View>
           <View style={styles.userContainer}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                style={styles.avatarImage}
-                source={{ uri: props.profileImage }}
-              />
-              <Text style={styles.avatarText}>{props.profileName}</Text>
+            <View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  style={styles.avatarImage}
+                  source={{ uri: props.profileImage }}
+                />
+                <Text style={styles.avatarText}>{props.profileName}</Text>
+              </View>
+              <View style={{paddingLeft: 30, marginTop: -8}}>
+                {content[current] ? <Text style={styles.dateText}>{content[current].createdAt} ola</Text> : null}
+              </View>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -434,6 +440,7 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     height: 50,
+    paddingTop: 6,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 15,
@@ -445,6 +452,11 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontWeight: "bold",
+    color: "white",
+    paddingLeft: 10,
+  },
+  dateText: {
+    fontSize: 11,
     color: "white",
     paddingLeft: 10,
   },

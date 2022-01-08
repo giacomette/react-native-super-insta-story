@@ -8,6 +8,7 @@ export interface IUserStory {
 export interface IUserStoryItem {
     story_id: number,
     story_image: string
+    createdAt: string;
     onPress?: any,
     text?: any,
     renderIconMenu?:any,
