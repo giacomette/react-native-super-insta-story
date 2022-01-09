@@ -291,7 +291,7 @@ console.log('close menu')
                 <Text style={styles.avatarText}>{props.profileName}</Text>
               </View>
               <View style={{paddingLeft: 30, marginTop: -8}}>
-                {content[current] ? <Text style={styles.dateText}>{content[current].createdAt} ola</Text> : null}
+                {content[current] ? <Text style={styles.dateText}>{content[current].createdAt}</Text> : null}
               </View>
             </View>
             <TouchableOpacity
